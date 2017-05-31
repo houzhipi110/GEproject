@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<script src="http://cdn.bootcss.com/jquery/2.1.4/jquery.min.js"></script>
+		<title>厦门云脉文档识别接口demo</title>
+	</head>
+	<body>
+		<h3>厦门云脉文档识别接口demo</h3>
+	<hr />
+		<form id="uploadForm" name="uploadForm" method="post" enctype="multipart/form-data" style="text-align:center;margin:0 auto;">
+			<input type="hidden" name="action" value="doc.scan" />
+			<p>
+				<input required="required" type="file" name="file" id="file" value="" />
+			</p>
+			<span style="color: red;">
+				支持的文件格式：jpg、bmp、jpeg、png。 最大可上传：5M
+			</span>
+			<p>用户名:
+				<input required="required" type="text" style="width: 300px;" name="username"  onfocus="func1(this);" onblur="func2(this);" />
+			</p>
+			<p>密&nbsp;码:
+				<input required="required" type="text" style="width: 300px;" name="password" onfocus="func1(this);" onblur="func2(this);" />
+			</p>
+			<p id="label_ocrLang">识别语言:
+				<input value="2" id="ocr_china" name="ocrLang" checked="checked" type="radio"><label for="ocr_china">中文</label> 
+				<input value="1" id="ocr_eng" name="ocrLang" type="radio"><label for="ocr_eng">英文</label>
+				<input value="3" id="ocr_eng_eur" name="ocrLang" type="radio"><label for="ocr_eng_eur">欧文</label>
+				<input value="4" id="ocr_rassian" name="ocrLang" type="radio"><label id="label_ocr_rassian" for="ocr_rassian">俄文</label>
+				<input value="6" id="ocr_japan" name="ocrLang" type="radio"><label for="ocr_japan">日文</label>
+			</p>
+			<p id="label_keyLang">输出语言:
+				<input value="0" id="key_eng_default" name="keyLang" checked="checked" type="radio"><label for="key_eng_default">默认</label>
+				<input value="1" id="key_eng" name="keyLang" type="radio"><label for="key_eng">简体中文</label>
+				<input value="3" id="key_eng_eur" name="keyLang" type="radio"><label for="key_eng_eur">繁体中文</label>
+			</p>
+			<p>是否显示座标:
+				<input value="1" name="er" checked="checked" type="radio"><label for="key_eng_default">不显示</label>
+				<input value="0" name="er" type="radio"><label for="key_eng">显示</label>
+			</p>
+			<p id="label_keyLang">返回格式:
+				<input value="0" name="format" checked="checked" type="radio"><label for="key_eng_default">xml</label>
+				<input value="1" name="format" type="radio"><label for="key_eng">json</label>
+			</p>
+			<input type="submit" value="提交" />
+		</form> 
+		<table>
+			<tr>
+				<th style="width: 380px;">结果显示区域:</th>
+				<th style="width: 500px">
+					<textarea id="output" style="resize: none;width: 480px;height: 400px;max-width: 490px;max-height: 410px;background-color: #dedede;"></textarea>
+				</th>
+			</tr>
+		</table>
+	</body>
+	
+	<script type="text/javascript">
+		function func1(el) {
+			if (el.value == el.defaultValue) {
+				el.value = '';
+				el.style.color = '#000';
+			}
+		}
+		
+		function func2(el) {
+			if (!el.value) {
+				el.value = el.defaultValue;
+				el.style.color = '#999';
+			}
+		}
+		
+		$(document).ready(function(){
+			var form = document.getElementById("uploadForm");
+				$(form).on("submit", function(e) {
+				e.preventDefault();//必须
+				var oData = new FormData(form);  
+				$.ajax({
+					    url: "http://www.yunmaiocr.com/SrvHTMLAPI" ,
+					    type: 'POST',
+					    data: oData,
+					    async: true,  //异步，其他默认为false即可，xmlhttprequest自动处理
+				        cache: false,  
+				        contentType: false,  
+				        processData: false,  
+				        dataType: "text",
+					    success: function (returndata) {
+					    		$( '#output').html(returndata);
+					    },
+					    error: function (returndata) {
+			                    alert("请求失败");  
+					    }
+				});
+			});
+		});
+	</script>
+</html>
